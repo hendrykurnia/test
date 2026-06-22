@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MCP API Test</title>
+</head>
+<body>
+
+  <h3>MCP API Test</h3>
+
+  <input type="text" id="inputText" placeholder="Enter text..." />
+  <button onclick="sendRequest()">Submit</button>
+
+  <h4>Response:</h4>
+  <pre id="outputText"></pre>
+
+  <script>
+    async function sendRequest() {
+      const input = document.getElementById("inputText").value;
+      const output = document.getElementById("outputText");
+
+      output.textContent = "Loading...";
+
+      const url = "https://apim.trial.workato.com/hendry-itbizpro/career-profile-genie-v1/career-genie-api";
+
+      const payload = {
+        request: input
+      };
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+	          "api-token": "61d53787304573c8a1217655a515233594abecfa98440712ec2dbb136cb24ad9",
+            "Origin": "https://apim.trial.workato.com",
+            "Referer": "https://apim.trial.workato.com"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        output.textContent = JSON.stringify(data, null, 2);
+
+      } catch (err) {
+        output.textContent = "Error: " + err.message;
+      }
+    }
+  </script>
+
+</body>
+</html>
