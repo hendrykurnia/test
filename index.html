@@ -46,8 +46,49 @@
       }
     }
 
-	
-    async function sendRequestMCP() {
+	//use direct api call    
+	async function sendRequestMCP() {
+      const inputQuery = document.getElementById("inputText").value;
+      const output = document.getElementById("outputText");
+
+      output.textContent = "Loading...";
+
+      const url = "https://2640.apim.mcp.trial.workato.com?wkt_token=55b5231daa7690b69b92806820acd8c44a145cbe2cfac0d813f4249d4363c1b6";
+
+      const payload = {
+	      jsonrpc: "2.0",
+	      id: 1,
+	      method: "tools/call",
+	      params: {
+	          name: "Get_Career_Profile_Information_and_Answer_the_related_Questions",
+	          arguments: {
+	              input: inputQuery
+	          }
+	      }
+	  };
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+			"Access-Control-Allow-Origin": "*"
+			"Access-Control-Allow-Origin": "https://hendrykurnia.github.io"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        output.textContent = JSON.stringify(data, null, 2);
+
+      } catch (err) {
+        output.textContent = "Error: " + err.message;
+      }
+    }
+
+	//use external proxy server, success send request and but failed get response 504
+    /*async function sendRequestMCP() {
       const inputQuery = document.getElementById("inputText").value;
       const output = document.getElementById("outputText");
 
@@ -90,7 +131,7 @@
 	  } catch (err) {
 	    output.textContent = "Error: " + err.message;
 	  }
-}
+	}*/
   </script>
 
 </body>
