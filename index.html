@@ -53,9 +53,11 @@
 
       output.textContent = "Loading...";
 
-      const url = "https://2640.apim.mcp.trial.workato.com?wkt_token=55b5231daa7690b69b92806820acd8c44a145cbe2cfac0d813f4249d4363c1b6";
+      // 1. The Proxy URL
+      const proxyUrl = "https://corsproxy.io/?"; 
+      const targetUrl = "https://2640.apim.mcp.trial.workato.com?wkt_token=55b5231daa7690b69b92806820acd8c44a145cbe2cfac0d813f4249d4363c1b6";
 
-      const payload = {
+	  const payload = {
 	      jsonrpc: "2.0",
 	      id: 1,
 	      method: "tools/call",
@@ -67,24 +69,28 @@
 	      }
 	  };
 
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-			"Access-Control-Allow-Origin": "https://hendrykurnia.github.io"
-          },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-        output.textContent = JSON.stringify(data, null, 2);
-
-      } catch (err) {
-        output.textContent = "Error: " + err.message;
-      }
-    }
+	  try {
+	    // 2. Wrap the target URL in the proxy
+	    const response = await fetch(proxyUrl + encodeURIComponent(targetUrl), {
+	      method: "POST",
+	      headers: {
+	        "Content-Type": "application/json",
+	        "Accept": "application/json"
+	      },
+	      body: JSON.stringify(payload)
+	    });
+	
+	    if (!response.ok) {
+	        throw new Error(`Server responded with ${response.status}`);
+	    }
+	
+	    const data = await response.json();
+	    output.textContent = JSON.stringify(data, null, 2);
+	
+	  } catch (err) {
+	    output.textContent = "Error: " + err.message;
+	  }
+}
   </script>
 
 </body>
